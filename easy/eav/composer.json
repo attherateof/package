@@ -1,0 +1,33 @@
+{
+    "name": "easy/eav",
+    "description": "Entity attribute value",
+    "keywords": ["laravel", "eav"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "amitbiswaswebdev",
+            "email": "amit.biswas.webdev@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Easy\\Eav\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Easy\\Eav\\EavServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
