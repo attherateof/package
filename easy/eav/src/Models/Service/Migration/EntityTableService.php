@@ -1,6 +1,6 @@
 <?php
 
-namespace Easy\Eav\Models\Service;
+namespace Easy\Eav\Models\Service\Migration;
 
 use Illuminate\Support\Facades\Schema;
 use Easy\Eav\Models\Service\Migration\GeneratorService;
@@ -24,14 +24,9 @@ class EntityTableService
     public function createEntityTypeTables(EntityType $entityType, array $attributes)
     {
         $entityTypeCode = $entityType->code;
-
-        // Create main entity table
         $this->createMainEntityTable($entityTypeCode,  $attributes);
-
-        // Create tables for different value types
+        sleep(2);
         $this->migrationGeneratorService->createEntityTypeValueTables($entityTypeCode);
-
-        // $this->migrationGeneratorService->migrateEav();
     }
 
     /**
@@ -45,10 +40,8 @@ class EntityTableService
         $tableName = $entityTypeCode . '_entity';
 
         if (Schema::hasTable($tableName)) {
-            // Table exists, create an alter migration if needed
             $this->migrationGeneratorService->createAlterMigration($tableName, $attributes);
         } else {
-            // Table doesn't exist, create the table migration
             $this->migrationGeneratorService->createNewTableMigration($tableName, $attributes);
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Easy\Eav\Models\Service;
+namespace Easy\Eav\Models\Service\Migration;
 
 use Easy\Eav\Models\AttributeGroup;
 use Easy\Eav\Models\AttributeSet;

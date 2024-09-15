@@ -3,9 +3,7 @@
 namespace Easy\Eav;
 
 use Illuminate\Support\ServiceProvider;
-use Easy\Eav\Console\Commands\MakeEntity;
-// use Easy\Eav\Contracts\EavMigrateInterface;
-// use Easy\Eav\Models\Services\EavMigrate;
+use Easy\Eav\Console\Commands\MakeEav;
 
 class EavServiceProvider extends ServiceProvider
 {
@@ -14,7 +12,6 @@ class EavServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // $this->app->singleton(EavMigrateInterface::class, EavMigrate::class);
     }
 
     /**
@@ -29,7 +26,7 @@ class EavServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                MakeEntity::class
+                MakeEav::class
             ]);
         }
     }

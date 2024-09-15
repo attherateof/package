@@ -1,4 +1,5 @@
 <?php
+
 namespace Easy\Eav\Models\Service\Migration;
 
 use Illuminate\Support\Facades\Artisan;
@@ -35,7 +36,7 @@ class GeneratorService
      */
     public function createAlterMigration(string $tableName, array $attributes)
     {
-        $migrationName = 'alter_' . $tableName . '_table_add_missing_columns';
+        $migrationName = 'alter_' . $tableName . '_table_alter';
         $this->createSchema($migrationName);
 
         $filePath = $this->getLatestMigrationFilePath($migrationName);
@@ -68,9 +69,12 @@ class GeneratorService
         foreach ($types as $type => $columnType) {
             $migrationName = 'create_' . $entityTypeCode . '_entity_' . $type . '_table';
             $this->createSchema($migrationName);
-
             $filePath = $this->getLatestMigrationFilePath($migrationName);
-            $this->migrationFileUpdater->populateEntityTypeValueMigration($filePath, $columnType);
+            $this->migrationFileUpdater->populateEntityTypeValueMigration(
+                $filePath, 
+                $columnType,
+                $entityTypeCode . '_entity'
+            );
         }
     }
 

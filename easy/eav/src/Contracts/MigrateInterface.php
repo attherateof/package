@@ -1,8 +1,8 @@
 <?php
 
-namespace Easy\Eav\Models\Service;
+namespace Easy\Eav\Contracs;
 
-class Migrate
+interface MigrateInterface
 {
     public const STORAGE_TYPE_INT = 'int';
     public const STORAGE_TYPE_STRING = 'string';

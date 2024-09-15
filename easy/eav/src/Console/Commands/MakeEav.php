@@ -6,14 +6,14 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Easy\Eav\Models\Service\EavService;
 
-class MakeEntity extends Command
+class MakeEav extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'easy:make-entity {class}';
+    protected $signature = 'easy:make-eav {class}';
 
     /**
      * The console command description.
@@ -47,7 +47,7 @@ class MakeEntity extends Command
         if (!class_exists($classPath)) {
             $this->error("Class {$classPath} does not exist.");
             
-            return SymfonyCommand::SUCCESS;
+            return SymfonyCommand::FAILURE;
         }
 
         // Get the EAV_DATA property from the class
@@ -56,7 +56,7 @@ class MakeEntity extends Command
         if (!defined("{$classPath}::EAV_DATA")) {
             $this->error("Class {$classPath} does not have EAV_DATA.");
             
-            return SymfonyCommand::SUCCESS;
+            return SymfonyCommand::FAILURE;
         }
 
         // Read the EAV data

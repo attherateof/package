@@ -89,9 +89,10 @@ class FileUpdater
      * @param array $attributes
      * @return void
      */
-    public function populateEntityTypeValueMigration(string $filePath, string $columnType)
+    public function populateEntityTypeValueMigration(string $filePath, string $columnType, string $mainTable)
     {
         $columns = "\t \t \t" . '$table->foreignId(\'attribute_id\')->constrained(\'attributes\')->onDelete(\'cascade\');' . "\n";
+        $columns .= "\t \t \t" . '$table->foreignId(\'main_table_id\')->constrained(\'' . $mainTable . '\')->onDelete(\'cascade\');' . "\n";
         $option = '';
         if ($columnType === 'decimal') {
             $option = ', 8, 4';
