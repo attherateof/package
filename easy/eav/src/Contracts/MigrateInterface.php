@@ -1,6 +1,6 @@
 <?php
 
-namespace Easy\Eav\Contracs;
+namespace Easy\Eav\Contracts;
 
 interface MigrateInterface
 {

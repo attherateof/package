@@ -22,78 +22,52 @@ class Get
      */
     public function execute(string $entityTypeCode, int $id)
     {
-        // Step 1: Get the correct entity table from the entity_types table
-        $entityType = DB::table('entity_types')
-            ->where('code', $entityTypeCode)
-            ->first();
+        $entity = $this->loadEntity($id, $entityTypeCode);
 
-        if (!$entityType) {
-           throw new \Exception("Entity type does not exists");
+        if (!$entity) {
+            throw new \Exception("Entity not found.");
         }
 
-        // Step 2: Query static data from the main entity table
-        $mainEntityTable = $entityType->entity_table;
-
-        $query = DB::table($mainEntityTable . ' as e')
-        ->select('e.*') // Select all static fields
-        // Step 3: Join non-static attribute tables
-        ->leftJoin($entityTypeCode ."_entity_text as t", 't.entity_id', '=', 'e.id')
-        ->leftJoin('attributes as a_text', function($join) use ($entityType) {
-            $join->on('t.attribute_id', '=', 'a_text.id')
-                ->where('a_text.storage', 'text')
-                ->where('a_text.entity_type_id', '=', $entityType->id);
-        })
-        ->leftJoin($entityTypeCode ."_entity_int as i", 'i.entity_id', '=', 'e.id')
-        ->leftJoin('attributes as a_int', function($join) use ($entityType) {
-            $join->on('i.attribute_id', '=', 'a_int.id')
-                ->where('a_int.storage', 'int')
-                ->where('a_int.entity_type_id', '=', $entityType->id);
-        })
-        ->leftJoin($entityTypeCode ."_entity_decimal as d", 'd.entity_id', '=', 'e.id')
-        ->leftJoin('attributes as a_decimal', function($join) use ($entityType) {
-            $join->on('d.attribute_id', '=', 'a_decimal.id')
-                ->where('a_decimal.storage', 'decimal')
-                ->where('a_decimal.entity_type_id', '=', $entityType->id);
-        })
-        ->leftJoin($entityTypeCode ."_entity_string as s", 's.entity_id', '=', 'e.id')
-        ->leftJoin('attributes as a_string', function($join) use ($entityType) {
-            $join->on('s.attribute_id', '=', 'a_string.id')
-                ->where('a_string.storage', 'string')
-                ->where('a_string.entity_type_id', '=', $entityType->id);
-        })
-        ->leftJoin($entityTypeCode ."_entity_datetime as dt", 'dt.entity_id', '=', 'e.id')
-        ->leftJoin('attributes as a_datetime', function($join) use ($entityType) {
-            $join->on('dt.attribute_id', '=', 'a_datetime.id')
-                ->where('a_datetime.storage', 'datetime')
-                ->where('a_datetime.entity_type_id', '=', $entityType->id);
-        })
-        // Step 4: Where clause to get the specific entity by ID
-        ->where('e.id', $id)
-        ->get();
-
-        $entityData = [];
-        foreach ($query as $row) {
-            // Static fields are directly part of the row
-            $entityData['static'] = (array) $row;
-    
-            // Non-static attributes can be mapped by their attribute code
-            if ($row->text_value) {
-                $entityData[$row->attribute_code_text] = $row->text_value;
-            }
-            if ($row->int_value) {
-                $entityData[$row->attribute_code_int] = $row->int_value;
-            }
-            if ($row->decimal_value) {
-                $entityData[$row->attribute_code_decimal] = $row->decimal_value;
-            }
-            if ($row->string_value) {
-                $entityData[$row->attribute_code_string] = $row->string_value;
-            }
-            if ($row->datetime_value) {
-                $entityData[$row->attribute_code_datetime] = $row->datetime_value;
+        $attributeGroups = $this->eavGet
+            ->execute(
+                $entityTypeCode,
+                $entity->attribute_set_code
+                )
+            ->attributeSets
+            ->first()
+            ->attributeGroups;
+        
+        $entityArray = [];
+        foreach ($attributeGroups as $attributeGroup) {
+            $attrbutes = $attributeGroup->attributes;
+            foreach ($attributeGroup->attributes as $attribute) {
+                if (condition) {
+                    # code...
+                }
+                // $entityArray
             }
         }
+    }
 
-        return $entityData;
+
+    private function loadEntity(int $id, string $entityTypeCode)  {
+
+        return DB::table($entityTypeCode . '_entity as e')
+            ->select(
+                'e.*',
+                't.attribute_id as text_attribute_id', 't.value as text_value',
+                'i.attribute_id as int_attribute_id', 'i.value as int_value',
+                'd.attribute_id as decimal_attribute_id', 'd.value as decimal_value',
+                's.attribute_id as string_attribute_id', 's.value as string_value',
+                'dt.attribute_id as datetime_attribute_id', 'dt.value as datetime_value'
+            )
+            ->leftJoin($entityTypeCode . "_entity_text as t", 't.main_table_id', '=', 'e.id')
+            ->leftJoin($entityTypeCode . "_entity_int as i", 'i.main_table_id', '=', 'e.id')
+            ->leftJoin($entityTypeCode . "_entity_decimal as d", 'd.main_table_id', '=', 'e.id')
+            ->leftJoin($entityTypeCode . "_entity_string as s", 's.main_table_id', '=', 'e.id')
+            ->leftJoin($entityTypeCode . "_entity_datetime as dt", 'dt.main_table_id', '=', 'e.id')
+            ->where('e.id', $id)
+            ->get();
+
     }
 }

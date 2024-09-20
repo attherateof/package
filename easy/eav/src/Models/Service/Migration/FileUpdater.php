@@ -19,17 +19,13 @@ class FileUpdater
      */
     public function populateNewTableMigration(string $filePath, array $attributes)
     {
-        $columns = '';
-        $attributeCount = count($attributes);
+        $columns = "\t \t \t" . '$table->string(\'attribute_set_code\');' . "\n";
         foreach ($attributes as $key => $attribute) {
             if ($attribute['is_static'] === true) {
-                $columns .= $this->attributeColumnService->addColumnBasedOnType($attribute);
-                if ($key < ($attributeCount - 1)) {
-                    $columns .= "\n";
-                }
+                $columns .= $this->attributeColumnService->addColumnBasedOnType($attribute) . "\n";
             }
         }
-
+        $columns .= "\t \t \t" . '$table->foreign(\'attribute_set_code\')->references(\'code\')->on(\'attribute_sets\')->onDelete(\'cascade\');';
         $this->populateMigrationFile($filePath, $columns);
     }
 
